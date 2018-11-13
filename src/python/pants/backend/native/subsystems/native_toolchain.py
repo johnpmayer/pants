@@ -137,7 +137,7 @@ def select_llvm_c_toolchain(platform, native_toolchain):
     working_c_compiler = provided_clang.copy(
       # We need g++'s version of the GLIBCXX library to be able to run, unfortunately.
       library_dirs=(provided_gcc.library_dirs + provided_clang.library_dirs),
-      include_dirs=provided_gcc.include_dirs,
+      include_dirs=(provided_gcc.include_dirs + provided_clang.include_dirs),
       extra_args=(llvm_c_compiler_args + provided_clang.extra_args + gcc_install.as_clang_argv))
 
   base_linker_wrapper = yield Get(BaseLinker, NativeToolchain, native_toolchain)
@@ -184,7 +184,7 @@ def select_llvm_cpp_toolchain(platform, native_toolchain):
       # We need g++'s version of the GLIBCXX library to be able to run, unfortunately.
       library_dirs=(provided_gpp.library_dirs + provided_clangpp.library_dirs),
       # NB: we use g++'s headers on Linux, and therefore their C++ standard library.
-      include_dirs=provided_gpp.include_dirs,
+      include_dirs=(provided_gcc.include_dirs + provided_clang.include_dirs),
       extra_args=(llvm_cpp_compiler_args + provided_clangpp.extra_args + gcc_install.as_clang_argv))
     linking_library_dirs = provided_gpp.library_dirs + provided_clangpp.library_dirs
     # Ensure we use libstdc++, provided by g++, during the linking stage.
